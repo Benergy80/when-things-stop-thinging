@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<title>when things stop thinging</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --fade0: #fff;
+    --fade1: #888;
+    --fade2: #444;
+    --fade3: #222;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--bg);
+    color: var(--fade0);
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    
+    /* Instagram Story aspect ratio optimization */
+    aspect-ratio: 9/16;
+    max-width: calc(100vh * 9/16);
+    margin: 0 auto;
+    position: relative;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0e0e0e 0%, #1a1a1a 100%);
+  }
+
+  #verse {
+    font-size: clamp(2rem, 8vw, 4rem);
+    letter-spacing: .15em;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.3;
+    padding: 40px 20px;
+    margin: 0;
+    width: 90%;
+    max-width: 400px;
+    
+    /* Story-friendly positioning */
+    position: relative;
+    z-index: 10;
+    
+    /* Clean text without backdrop */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+  }
+
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3em;
+    flex-wrap: wrap;
+  }
+
+  #verse:active {
+    transform: scale(0.98);
+  }
+
+  .word-container {
+    display: inline-block;
+    position: relative;
+    min-width: 1ch;
+  }
+  
+  .changing-word {
+    position: relative;
+    transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 400;
+  }
+  
+  .changing-word.changing {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+
+  .thing {
+    position: absolute;
+    pointer-events: none;
+    animation: storyFade 6s linear forwards;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    z-index: 1;
+  }
+
+  @keyframes storyFade {
+    0%   { 
+      opacity: 0.9;   
+      transform: scale(0.8) translateZ(0); 
+      color: var(--fade0); 
+    }
+    25%  { 
+      opacity: 1;  
+      transform: scale(1) translateY(-30px) translateZ(0); 
+      color: var(--fade0); 
+    }
+    50%  { 
+      opacity: 0.6; 
+      transform: scale(0.9) translateY(-60px) translateZ(0); 
+      color: var(--fade1); 
+    }
+    75%  { 
+      opacity: 0.3;  
+      transform: scale(0.7) translateY(-100px) translateZ(0); 
+      color: var(--fade2); 
+    }
+    100% { 
+      opacity: 0;   
+      transform: scale(0.5) translateY(-150px) translateZ(0); 
+      color: var(--fade3); 
+    }
+  }
+
+  /* Ambient background particles */
+  .bg-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.02) 0%, transparent 50%),
+                radial-gradient(circle at 20% 90%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Mobile story optimizations */
+  @media (max-width: 480px) {
+    #verse {
+      font-size: clamp(1.8rem, 9vw, 3.5rem);
+      padding: 30px 15px;
+    }
+  }
+
+  @media (max-height: 800px) {
+    #verse {
+      font-size: clamp(1.6rem, 7vw, 3rem);
+      padding: 25px 15px;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .thing {
+      animation-duration: 3s;
+    }
+    
+    .changing-word {
+      transition-duration: 1s;
+    }
+    
+    #verse:active {
+      transform: none;
+    }
+    
+    .bg-glow {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  
+  <div id="verse" role="main" aria-live="polite">
+    <div class="line">
+      when
+    </div>
+    <div class="line">
+      <span class="word-container">
+        <span id="word" class="changing-word">things</span>
+      </span>
+    </div>
+    <div class="line">
+      stop
+    </div>
+    <div class="line">
+      <span class="word-container">
+        <span id="verb" class="changing-word">thinging</span>
+      </span>
+    </div>
+  </div>
+
+<script>
+const glyphs = '●◉○◌◦∙⋅⬡⬢'.split('');
+
+const verse = document.getElementById('verse');
+const word = document.getElementById('word');
+const verb = document.getElementById('verb');
+
+let lastSpawn = 0;
+let spawnInterval = 400; // Optimized for story viewing
+let maxThings = 12; // Reduced for story performance
+let currentThings = 0;
+
+function spawnThing() {
+  // Performance throttling
+  const now = Date.now();
+  if (now - lastSpawn < 150) return;
+  lastSpawn = now;
+  
+  if (currentThings >= maxThings) return;
+  
+  const el = document.createElement('span');
+  el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+  el.className = 'thing';
+  
+  // Story-optimized positioning (avoid edges and text area)
+  const margin = 15;
+  const centerAvoid = { x: 50, y: 50, radius: 30 }; // Avoid center text
+  let x, y;
+  
+  do {
+    x = margin + Math.random() * (100 - 2 * margin);
+    y = margin + Math.random() * (100 - 2 * margin);
+  } while (
+    Math.sqrt(Math.pow(x - centerAvoid.x, 2) + Math.pow(y - centerAvoid.y, 2)) < centerAvoid.radius
+  );
+  
+  el.style.left = x + 'vw';
+  el.style.top = y + 'vh';
+  el.style.fontSize = (Math.random() * 1.2 + 0.8) + 'rem';
+  
+  document.body.appendChild(el);
+  currentThings++;
+  
+  setTimeout(() => {
+    if (el.parentNode) {
+      el.remove();
+      currentThings--;
+    }
+  }, 7100);
+}
+
+function cycleText() {
+  const parts = [
+    ['things', 'thinging'],
+    ['beings', 'being'],
+    ['meanings', 'meaning'],
+    ['selves', 'selfing'],
+    ['words', 'wording'],
+    ['likes', 'liking'],
+    ['friends', 'friending']
+  ];
+  
+  let idx = 0;
+  
+  setInterval(() => {
+    // Add changing class for exit animation
+    word.classList.add('changing');
+    verb.classList.add('changing');
+    
+    // First timeout: change text after fade out completes
+    setTimeout(() => {
+      idx = (idx + 1) % parts.length;
+      word.textContent = parts[idx][0];
+      verb.textContent = parts[idx][1];
+    }, 2500); // Text changes after complete fade out
+    
+    // Second timeout: start fade in after void moment
+    setTimeout(() => {
+      // Remove changing class for enter animation
+      word.classList.remove('changing');
+      verb.classList.remove('changing');
+    }, 3200); // 700ms of complete emptiness
+  }, 6000);
+}
+
+// Touch-friendly interaction for stories
+verse.addEventListener('click', () => {
+  // Burst effect for stories
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => spawnThing(), i * 100);
+  }
+});
+
+verse.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  // Burst effect for stories
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => spawnThing(), i * 100);
+  }
+}, { passive: false });
+
+// Optimized spawn rate for story viewing
+let intervalId;
+function startSpawning() {
+  intervalId = setInterval(spawnThing, spawnInterval);
+}
+
+function stopSpawning() {
+  clearInterval(intervalId);
+}
+
+// Pause when not visible (battery optimization)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopSpawning();
+  } else {
+    startSpawning();
+  }
+});
+
+// Initialize
+startSpawning();
+cycleText();
+
+// Cleanup
+window.addEventListener('beforeunload', () => {
+  stopSpawning();
+});
+</script>
+</body>
+</html>
