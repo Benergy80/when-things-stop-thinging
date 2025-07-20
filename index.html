@@ -271,6 +271,25 @@
             color: var(--fade2);
         }
 
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--fade1);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .footer-link:hover {
+            color: var(--fade0);
+        }
+
         .particle {
             position: fixed;
             pointer-events: none;
@@ -333,17 +352,6 @@
             }
         }
 
-        .interaction-hint {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.7rem;
-            color: var(--fade2);
-            opacity: 0;
-            animation: fadeInUp 2s ease-out 2s forwards;
-            letter-spacing: 0.05em;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 2rem 1rem;
@@ -385,7 +393,6 @@
     
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
-    <div class="interaction-hint">click to spawn particles</div>
 
     <div class="container">
         <header>
@@ -411,7 +418,11 @@
         </div>
 
         <footer class="footer">
-            <p>© 2024 Bo Rodda — When Things Stop Thinging</p>
+            <p>© 2025 Bo Rodda — When Things Stop Thinging</p>
+            <div class="footer-links">
+                <a href="https://gamingwithbo.com" target="_blank" class="footer-link">gamingwithbo.com</a>
+                <a href="https://borodda.com" target="_blank" class="footer-link">borodda.com</a>
+            </div>
         </footer>
     </div>
 
@@ -432,7 +443,32 @@
                     document.querySelector('.loading').style.display = 'none';
                 }, 500);
             }, 1500);
+            
+            // Spawn initial particles
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = Math.random() * window.innerHeight;
+                        spawnParticle(x, y);
+                    }, i * 200);
+                }
+            }, 2000);
+            
+            // Start automatic particle spawning
+            setTimeout(() => {
+                startAutoParticleSpawn();
+            }, 3000);
         });
+
+        // Auto-spawn particles
+        function startAutoParticleSpawn() {
+            setInterval(() => {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                spawnParticle(x, y);
+            }, 400 + Math.random() * 300);
+        }
 
         // Custom cursor
         document.addEventListener('mousemove', (e) => {
@@ -528,10 +564,10 @@
 
         // Background glyph spawning
         setInterval(() => {
-            if (Math.random() < 0.3) {
+            if (Math.random() < 0.5) {
                 createFloatingGlyph();
             }
-        }, 4000);
+        }, 2000);
 
         // Keyboard accessibility
         document.addEventListener('keydown', (e) => {
