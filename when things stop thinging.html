@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When Things Stop Thinging</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #0a0a0a, #1a1a1a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 100;
+            letter-spacing: 0.3em;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out forwards;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .chart-container:hover::before {
+            left: 100%;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+            position: relative;
+            z-index: 2;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #444, transparent);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 3rem 0;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideIn 0.8s ease-out forwards;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+            transform: translateX(50px);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-year {
+            font-size: 2.5rem;
+            font-weight: 100;
+            color: #fff;
+            min-width: 120px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 2rem;
+            border-radius: 15px;
+            border-left: 3px solid #666;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #fff;
+            transform: scale(1.02);
+        }
+
+        .timeline-content h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .vinyl-record {
+            width: 250px;
+            height: 250px;
+            background: 
+                radial-gradient(circle at center, #000 15%, #333 16%, #000 17%, #333 18%, #000 19%, #333 20%, #000 21%, #333 22%, #000 23%, #333 24%, #000 25%, #333 26%, #000 27%, #333 28%, #000 29%, #333 30%, #000 31%, #333 32%, #000 33%, #333 34%, #000 35%, #333 36%, #000 37%, #333 38%, #000 39%, #333 40%, #000 41%, #333 42%, #000 43%, #333 44%, #000 45%, #333 46%, #000 47%, #333 48%, #000 49%, #333 50%),
+                radial-gradient(circle at center, #333 0%, #000 50%);
+            border-radius: 50%;
+            margin: 2rem auto;
+            position: relative;
+            animation: spin 15s linear infinite;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .vinyl-record::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #666;
+        }
+
+        .vinyl-record:hover {
+            animation-duration: 2s;
+            transform: scale(1.05);
+            box-shadow: 0 0 80px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .data-stream {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            height: 150px;
+            align-items: end;
+            gap: 4px;
+        }
+
+        .data-bar {
+            background: linear-gradient(to top, #333, #666, #999);
+            width: calc(100% / 20);
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+            cursor: pointer;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .data-bar:hover {
+            background: linear-gradient(to top, #666, #999, #fff);
+            transform: scaleY(1.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.05); }
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .memory-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .memory-card:hover::before {
+            opacity: 1;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-8px) rotateY(5deg);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
+        }
+
+        .memory-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .memory-card:hover .memory-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #333, #666, #999, #fff);
+            transition: width 2s ease;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .quote {
+            font-size: 1.5rem;
+            font-style: italic;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.02);
+            margin: 3rem 0;
+            border-left: 4px solid #666;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 6rem;
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        .quote::after {
+            content: '"';
+            font-size: 6rem;
+            position: absolute;
+            bottom: -40px;
+            right: 30px;
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        .interactive-chart {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .chart-line {
+            stroke: #fff;
+            stroke-width: 3;
+            fill: none;
+            animation: drawLine 3s ease-in-out forwards;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        @keyframes drawLine {
+            from { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        .value-indicator {
+            font-size: 4rem;
+            font-weight: 100;
+            text-align: center;
+            margin: 2rem 0;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .value-indicator:hover {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .morphing-shape {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            background: linear-gradient(45deg, #333, #666, #999);
+            animation: morph 8s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .morphing-shape:hover {
+            animation-duration: 2s;
+            background: linear-gradient(45deg, #666, #999, #fff);
+        }
+
+        @keyframes morph {
+            0% { border-radius: 50%; transform: rotate(0deg); }
+            25% { border-radius: 0; transform: rotate(90deg); }
+            50% { border-radius: 20px; transform: rotate(180deg); }
+            75% { border-radius: 50% 0 50% 0; transform: rotate(270deg); }
+            100% { border-radius: 50%; transform: rotate(360deg); }
+        }
+
+        .audio-visualizer {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            height: 100px;
+            gap: 2px;
+            margin: 2rem 0;
+        }
+
+        .freq-bar {
+            width: 4px;
+            background: linear-gradient(to top, #333, #666, #999);
+            animation: audioViz 1.5s ease-in-out infinite;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .freq-bar:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .freq-bar:nth-child(even) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes audioViz {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+
+        .glitch-text {
+            animation: textGlitch 0.3s ease-in-out;
+        }
+
+        @keyframes textGlitch {
+            0%, 100% { 
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            20% { 
+                transform: translate(-2px, 2px);
+                filter: hue-rotate(90deg);
+            }
+            40% { 
+                transform: translate(-2px, -2px);
+                filter: hue-rotate(180deg);
+            }
+            60% { 
+                transform: translate(2px, 2px);
+                filter: hue-rotate(270deg);
+            }
+            80% { 
+                transform: translate(2px, -2px);
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        .sound-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: soundRipple 2s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes soundRipple {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 3rem 1rem;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+                text-align: center;
+            }
+            
+            .timeline-item::before {
+                left: 50%;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+                letter-spacing: 0.1em;
+            }
+
+            .vinyl-record {
+                width: 200px;
+                height: 200px;
+            }
+
+            .memory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" id="hero">
+        <h1 class="hero-title" onclick="triggerGlitch(this)">WHEN THINGS STOP THINGING</h1>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">The Death of Physicality</h2>
+        
+        <div class="chart-container">
+            <h3 class="chart-title">Physical Media → Digital Stream</h3>
+            <div class="interactive-chart" onclick="addRipple(event)">
+                <svg width="100%" height="100%" viewBox="0 0 400 200">
+                    <defs>
+                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#666;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#fff;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path class="chart-line" d="M 0 180 Q 100 160 200 140 T 400 120" stroke="url(#lineGradient)" />
+                    <circle cx="0" cy="180" r="4" fill="#fff" opacity="0.5" />
+                    <circle cx="100" cy="160" r="4" fill="#fff" opacity="0.6" />
+                    <circle cx="200" cy="140" r="4" fill="#fff" opacity="0.7" />
+                    <circle cx="300" cy="130" r="4" fill="#fff" opacity="0.8" />
+                    <circle cx="400" cy="120" r="4" fill="#fff" opacity="1" />
+                </svg>
+            </div>
+            <div class="value-indicator">
+                <span id="digitalValue">0</span>% Digital
+            </div>
+        </div>
+
+        <div class="audio-visualizer">
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+            <div class="freq-bar"></div>
+        </div>
+
+        <div class="memory-grid">
+            <div class="memory-card" onclick="animateCard(this)">
+                <div class="memory-icon">◉</div>
+                <h4>Radio Days</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 20%"></div>
+                </div>
+                <p>Shared cultural moments<br><small>Everyone listened together</small></p>
+            </div>
+            
+            <div class="memory-card" onclick="animateCard(this)">
+                <div class="memory-icon">●</div>
+                <h4>CD Collection</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45%"></div>
+                </div>
+                <p>Curated personal identity<br><small>Each purchase mattered</small></p>
+            </div>
+            
+            <div class="memory-card" onclick="animateCard(this)">
+                <div class="memory-icon">∞</div>
+                <h4>Streaming</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <p>Infinite yet ephemeral<br><small>Everything and nothing</small></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">The Timeline of Dissolution</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">1968</div>
+                <div class="timeline-content">
+                    <h4>The White Album</h4>
+                    <p>A pure white object containing four portraits, glossy photos, and the weight of cultural history. The objecthood itself was a statement—so much contained within so little shown.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">1973</div>
+                <div class="timeline-content">
+                    <h4>Dark Side of the Moon</h4>
+                    <p>A prism splitting light into infinite colors, the journey contained in physical grooves. The cover art promised a transformation, and the vinyl delivered it.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">1999</div>
+                <div class="timeline-content">
+                    <h4>Napster Arrives</h4>
+                    <p>The first crack in the dam. Music becomes files, sharing becomes downloading, ownership becomes access. The beginning of the end.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2008</div>
+                <div class="timeline-content">
+                    <h4>Class at Art Institute</h4>
+                    <p>The moment of realization: when things stop thinging, we lose more than objects. We lose the containers of meaning, the anchors of memory.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-content">
+                    <h4>The End of Permanence</h4>
+                    <p>Cultural touchstones dissolve into the digital stream. No more shared moments, no more common references, just algorithmic feeds of personalized nothing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">The Object as Data Container</h2>
+        
+        <div class="chart-container">
+            <h3 class="chart-title">Information Density vs. Meaning</h3>
+            <div class="data-stream">
+                <div class="data-bar" style="height: 20%" title="1960s - Radio"></div>
+                <div class="data-bar" style="height: 35%" title="1970s - Vinyl"></div>
+                <div class="data-bar" style="height: 60%" title="1980s - Cassette"></div>
+                <div class="data-bar" style="height: 85%" title="1990s - CD"></div>
+                <div class="data-bar" style="height: 95%" title="2000s - MP3"></div>
+                <div class="data-bar" style="height: 100%" title="2010s - Streaming"></div>
+                <div class="data-bar" style="height: 100%" title="2020s - AI Curation"></div>
+                <div class="data-bar" style="height: 100%" title="Future - ∞"></div>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 1rem;">
+                We've reached maximum information density, but at what cost to meaning?
+            </p>
+        </div>
+
+        <div class="vinyl-record" onclick="spinFaster(this)"></div>
+
+        <div class="quote">
+            The record is literally a textural representation of a moment in time. The sound reverberates through those grooves, the vibrations are impressed upon that object, and that object sings throughout time.
+        </div>
+
+        <div class="chart-container">
+            <h3 class="chart-title">Loss of Tangible Connection</h3>
+            <div class="morphing-shape" onclick="morphFaster(this)"></div>
+            <p style="text-align: center; margin-top: 1rem; color: #666;">
+                From physical to digital to algorithmic to AI-generated
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">The Algorithm vs. The Human Touch</h2>
+        
+        <div class="memory-grid">
+            <div class="memory-card">
+                <div class="memory-icon">◆</div>
+                <h4>Human Curation</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 15%"></div>
+                </div>
+                <p>Personal investment in selection<br><small>Each choice carried weight</small></p>
+            </div>
+            
+            <div class="memory-card">
+                <div class="memory-icon">▣</div>
+                <h4>Algorithmic Feeds</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%"></div>
+                </div>
+                <p>Predicted preferences<br><small>Optimized for engagement, not meaning</small></p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3 class="chart-title">The Death of Shared Experience</h3>
+            <svg width="100%" height="200" viewBox="0 0 400 200">
+                <defs>
+                    <linearGradient id="sharedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#333;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="personalGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#fff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M 50 50 L 100 55 L 150 65 L 200 80 L 250 100 L 300 130 L 350 170" 
+                      stroke="url(#sharedGradient)" stroke-width="3" fill="none" />
+                <path d="M 50 150 L 100 145 L 150 135 L 200 120 L 250 100 L 300 70 L 350 30" 
+                      stroke="url(#personalGradient)" stroke-width="3" fill="none" />
+                <text x="200" y="190" text-anchor="middle" fill="#666" font-size="12">
+                    Shared Culture ← vs → Personal Bubbles
+                </text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">What We've Lost</h2>
+        
+        <div class="quote">
+            When there is no grounding to that piece of culture that we all share, when objects lose their thingness, we lose the anchors that held our collective memory together.
+        </div>
+
+        <div class="chart-container">
+            <h3 class="chart-title">The Persistence of Truth</h3>
+            <div class="data-stream">
+                <div class="data-bar" style="height: 90%; background: linear-gradient(to top, #fff, #ccc);" title="Print Media"></div>
+                <div class="data-bar" style="height: 70%; background: linear-gradient(to top, #ccc, #999);" title="Broadcast TV"></div>
+                <div class="data-bar" style="height: 40%; background: linear-gradient(to top, #999, #666);" title="Cable News"></div>
+                <div class="data-bar" style="height: 20%; background: linear-gradient(to top, #666, #333);" title="Social Media"></div>
+                <div class="data-bar" style="height: 5%; background: linear-gradient(to top, #333, #111);" title="AI Content"></div>
+            </div>
+            <p style="text-align: center; margin-top: 1rem; color: #666;">
+                The erosion of authoritative sources → The death of shared truth
+            </p>
+        </div>
+
+        <div style="text-align: center; padding: 3rem;">
+            <p style="font-size: 1.4rem; color: #888; line-height: 1.6;">
+                The objects of identity, memory, and shared experience have all been digitized, 
+                accessible in infinite ways, but somehow never actually touching their true value.
+                <br><br>
+                <em style="color: #666;">When things stop thinging, we stop being.</em>
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Animate digital value counter
+        let digitalValue = 0;
+        const targetValue = 94;
+        const duration = 3000;
+        const increment = targetValue / (duration / 16);
+        
+        function updateDigitalValue() {
+            if (digitalValue < targetValue) {
+                digitalValue += increment;
+                document.getElementById('digitalValue').textContent = Math.floor(digitalValue);
+                requestAnimationFrame(updateDigitalValue);
+            }
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = Math.random() * 0.5 + 's';
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item, .memory-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Interactive functions
+        function triggerGlitch(element) {
+            element.classList.add('glitch-text');
+            setTimeout(() => {
+                element.classList.remove('glitch-text');
+            }, 300);
+        }
+
+        function animateCard(card) {
+            card.style.transform = 'scale(1.1) rotateY(10deg)';
+            setTimeout(() => {
+                card.style.transform = 'translateY(-8px) rotateY(5deg)';
+            }, 200);
+        }
+
+        function spinFaster(vinyl) {
+            vinyl.style.animationDuration = '1s';
+            setTimeout(() => {
+                vinyl.style.animationDuration = '15s';
+            }, 3000);
+        }
+
+        function morphFaster(shape) {
+            shape.style.animationDuration = '1s';
+            setTimeout(() => {
+                shape.style.animationDuration = '8s';
+            }, 2000);
+        }
+
+        function addRipple(event) {
+            const chart = event.currentTarget;
+            const ripple = document.createElement('div');
+            ripple.className = 'sound-wave';
+            ripple.style.width = '50px';
+            ripple.style.height = '50px';
+            ripple.style.left = event.offsetX - 25 + 'px';
+            ripple.style.top = event.offsetY - 25 + 'px';
+            chart.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 2000);
+        }
+
+        // Random data bar animations
+        function animateDataBars() {
+            const dataBars = document.querySelectorAll('.data-bar');
+            dataBars.forEach((bar, index) => {
+                setInterval(() => {
+                    const newHeight = Math.random() * 80 + 20;
+                    bar.style.height = newHeight + '%';
+                }, 2000 + Math.random() * 1000 + index * 100);
+            });
+        }
+
+        // Audio visualizer animation
+        function animateAudioViz() {
+            const freqBars = document.querySelectorAll('.freq-bar');
+            freqBars.forEach((bar, index) => {
+                setInterval(() => {
+                    const height = Math.random() * 80 + 20;
+                    bar.style.height = height + '%';
+                }, 100 + index * 50);
+            });
+        }
+
+        // Mouse trail effect
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.95) {
+                const trail = document.createElement('div');
+                trail.style.position = 'fixed';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                trail.style.width = '4px';
+                trail.style.height = '4px';
+                trail.style.background = 'rgba(255, 255, 255, 0.5)';
+                trail.style.borderRadius = '50%';
+                trail.style.pointerEvents = 'none';
+                trail.style.zIndex = '1000';
+                trail.style.animation = 'fadeOut 1s forwards';
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.remove();
+                }, 1000);
+            }
+        });
+
+        // Click visual feedback
+        document.addEventListener('click', () => {
+            if (Math.random() > 0.7) {
+                document.body.style.filter = 'hue-rotate(10deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                }, 100);
+            }
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDigitalValue();
+            animateDataBars();
+            animateAudioViz();
+        });
+    </script>
+</body>
+</html>

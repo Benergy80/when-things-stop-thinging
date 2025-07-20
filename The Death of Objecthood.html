@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Death of Objecthood</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f5f2ed;
+            --text-color: #2d2d2d;
+            --accent-color: #8b4513;
+            --soft-gray: #a8a8a8;
+            --light-gray: #e8e5e0;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 65ch;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out forwards;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--soft-gray);
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .essay {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        p {
+            margin-bottom: 1.8em;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        p:nth-child(1) { animation-delay: 0.2s; }
+        p:nth-child(2) { animation-delay: 0.4s; }
+        p:nth-child(3) { animation-delay: 0.6s; }
+        p:nth-child(4) { animation-delay: 0.8s; }
+
+        .quote {
+            border-left: 3px solid var(--accent-color);
+            padding-left: 1.5rem;
+            margin: 3rem 0;
+            font-style: italic;
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+
+        .object-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.5s forwards;
+        }
+
+        .object-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .object-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .object-card h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .object-card p {
+            font-size: 1rem;
+            margin: 0;
+            animation: none;
+            transform: none;
+            opacity: 1;
+        }
+
+        .floating-object {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .floating-object:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-object:nth-child(2) {
+            top: 70%;
+            right: 10%;
+            animation-delay: -7s;
+        }
+
+        .floating-object:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(30px) rotate(240deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .essay {
+                font-size: 1.1rem;
+            }
+            
+            .object-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, transparent 0%, var(--light-gray) 0%, var(--light-gray) 100%, transparent 100%);
+            background-size: 0% 100%;
+            background-repeat: no-repeat;
+            transition: background-size 0.5s ease;
+        }
+
+        .highlight:hover {
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="floating-object"></div>
+    <div class="floating-object"></div>
+    <div class="floating-object"></div>
+
+    <div class="container">
+        <header>
+            <h1>The Death of Objecthood</h1>
+            <p class="subtitle">On memory, digitization, and what we lose when everything becomes data</p>
+        </header>
+
+        <div class="essay">
+            <p>
+                Tonight I was... I saw something that seemed to have unlocked a door—a key. I found a key that unlocked a door I closed a long time ago. It was based around the idea, the news, that the Colbert Report was ending. The Late Show on CBS. Sounds contrite, but it's something that's been there my entire life—40 years. Wow. 45.
+            </p>
+
+            <p>
+                It got me thinking about something more important. Not just about loss or even memory, but something that concerned me a long time ago. And it's something that's still happening more and more every day. It was probably 2008. I was in a master's program at the Art Institute of Chicago. A class on the history of objects and the ideas around it—blah blah blah. Why are objects important, that kind of thing.
+            </p>
+
+            <p>
+                What struck me then—and it's something that I had kind of lost touch with since, but I think it's incredibly important—was this idea that when things stop thinging. When our things cease to be. And what I was really thinking about, and I realize this now, is the connection between the object—the made object, the ancestral object, the cherished object. But really what's profound about that object is not just its objecthood, but also the data, the information for which it represents or contains.
+            </p>
+
+            <div class="quote">
+                "When things stop thinging..."
+            </div>
+
+            <p>
+                Back then, what I was particularly keen on was reflecting on my father's record albums. He gave them to me—well, he gave me some of them. I took the best ones that looked cool, put them on my wall. These records from the 60s and 70s, about these great moments in history. But each one of these records is a data artifact—they're literally a textural representation of a moment in time. The sound reverberates through those grooves; the vibrations are impressed upon that object, and that object sings throughout time.
+            </p>
+
+            <div class="object-gallery">
+                <div class="object-card">
+                    <h3>1968</h3>
+                    <p>The White Album—four glossy portrait photos tucked inside, icons of my father's time. I got in trouble for pinning them on my wall.</p>
+                </div>
+                <div class="object-card">
+                    <h3>1973</h3>
+                    <p>Dark Side of the Moon—a prism, a light beam hitting and spreading into colors. It tells us the journey we might go on.</p>
+                </div>
+                <div class="object-card">
+                    <h3>1984</h3>
+                    <p>My stolen Grateful Dead cassette collection—why start again when something's taken from you?</p>
+                </div>
+            </div>
+
+            <p>
+                My father worked at a record store. He could get discounts on records, and he bought those records and he cherished those records. He had boxes of records growing up—great songs. The Beatles' White Album, and in that white album there were four glossy portrait photos of the Beatles. Icons of his time. I actually got in trouble because I took those glossy photos and pinned them on my wall in my bedroom—probably for his appreciation, but also I found some cool pictures inside this object, this white object, this album that was purely white. What a statement that had so much within it.
+            </p>
+
+            <p>
+                Objects have power. Their physical representation communicates intent. This is perhaps an idea for another idea—this white album that has so much but shares so little from its physical representation. It's interesting. I think of the Pink Floyd Dark Side of the Moon—a prism, a light beam hitting a prism and then spreading into its multiple colors. It tells us the journey that we might go on. In that objecthood, the objectness of that record album spoke to the people that purchased it and then collected it, or for me, pinned that also on my wall.
+            </p>
+
+            <p>
+                My lamenting, many years ago, was my own experience with my own record collections. Of course I had some of dad's objects, and I had my own tape cassette collections. Used to collect Grateful Dead shows. In fact, they were stolen from my truck one time, and then I never collected them again because they were taken from me. Why start a new collection when I'm almost lost?
+            </p>
+
+            <p>
+                Moving on to the CDs and all these other forms—we had micro discs, and ever and ever and ever more. Our collections of music were increasingly moved through the technology of how we actually transfer and communicate it, collect it. You think of Gutenberg's Bible. The horror of Rome when they realized that these cherished texts for centuries were hand-transcribed by orders of monks—some of which, if they made a mistake, had to start over. These cherished, perfect objects now simply being reduced to a printing press.
+            </p>
+
+            <p>
+                Perhaps that's something I feel—similar to this death of the importance of this object, of this collection, this maintainer of information, this time capsule that is passed down and cherished with all this glorious information contained in it. Self-contained. Each object finite. Each object a work of art.
+            </p>
+
+            <p>
+                I was asking myself back in the day: what does it mean when things like my father's record albums, my CD collection, everything else—all these objects that I cherish because I owned them, they were mine, they were something that I saved up for, I got, I bought—I looked at the literature in each case. Somehow they made a connection from me to the object to the music.
+            </p>
+
+            <p>
+                Back then, I wasn't thinking about the object—it was just the special opportunity to open up this piece of art, this work. And sure enough, eventually I uploaded all of my CDs—one by one into a hard drive using a CD-ROM device—and then I added them to iTunes. Eventually I had them all in my iPod, a simple device to play MP3s. Now all of my objects were within this device. Wonderful. Everything I have—this whole bookshelf of objects—were now in my hand.
+            </p>
+
+            <p>
+                When I first got my first iPod, I went to Rome and I had my entire music collection in my hand as I walked through the Roman Forum listening to "Money for Nothing." It's a great album. But that always gave me a sense of loss, because it's not just the objects of the music that we have turned into pure data.
+            </p>
+
+            <p>
+                Let me jump ahead real quick to acknowledge that I no longer have a music collection. I have no idea where that went, because it no longer meant anything once it was digitized. These days, whatever it was that was my music collection is gone. Don't know what happened to it. I pay a fee—a small fee, actually—to have access to every album ever created.
+            </p>
+
+            <p>
+                If you were to ask me 20 years ago, I'd say that's incredible. That's marvelous, amazing. And indeed it is. But what I want to focus on here—and I think the more profound question to be asked—is the value to which I actually place on these objects: to the artists, the creators. And back to that bold white album to the Beatles, or the expanding colors of Dark Side of the Moon, or many, many, many other examples.
+            </p>
+
+            <p>
+                These works of art are now reduced into a feed, a stream, a song file that is metadated, and an algorithm that has learned what I appreciate or like feeds them up to me. In many ways, I no longer even care what I listen to. Maybe that's my getting old. That isn't true with my father—he still listens to his collections. The objects, I would argue, and the experiences and memories that they hold are vital—not just to the experience of enjoying the music, but to the connection to our past, our family, our home.
+            </p>
+
+            <p>
+                These objects of identity, these objects of memory, have all been digitized, accessible in infinite ways. Now we have AI that can search through them in a million different ways, but somehow never actually touch on their value. The permanence of information becomes so much less absent that object, because it gets dissolved into a sea of many others—simply to be searched and scored. Full text never entirely consumed, but just parsed and clipped together to form some new idea.
+            </p>
+
+            <p>
+                We're utterly consumed by the typhoon of information of no value and absolute value. No value because I think for many there's no way to actually put a pin on it. We find ourselves in a time where there is no way to ground ourselves within the information to which we are trying to consume.
+            </p>
+
+            <p>
+                There is not that newspaper that persists from morning to evening that you read at breakfast and you come back around and you look at that headline again and say, "wow." And so many others did too, which causes you to call for action or change, or you discuss it at the water cooler the next morning.
+            </p>
+
+            <p>
+                I've been screaming for years. Ten years ago, I was on a panel at the Art Institute and they said, "what should be the thing that we discussed between the arts and the sciences? What's the most important thing that we should do, a collaborative research agenda between two institutions?" And I said, "the death of truth." And they looked at me like I was crazy. And ten years later, now I'm sitting here asking myself: I have no idea what is true or even knowing what truth means.
+            </p>
+
+            <p>
+                Perhaps it is the objecthood that is so persistent and important in the permanence of thought, of communication, of an artwork, of an expression, of a bold movement of throwing out an object that is purely white, with no marks adorning its face, that contains so much.
+            </p>
+
+            <p>
+                So these are some of my thoughts. I'm sure I'll have some more. But that's it for now.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Progress bar animation
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('p').forEach(p => {
+            observer.observe(p);
+        });
+
+        // Parallax effect for floating objects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.floating-object');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.2);
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
