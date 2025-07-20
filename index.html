@@ -479,30 +479,8 @@
             }
         });
 
-        // Work item interactions
+        // Work item hover effects only (removed click navigation)
         const workItems = document.querySelectorAll('.work-item');
-        
-        workItems.forEach(item => {            
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const href = item.getAttribute('data-href');
-                if (href) {
-                    // Spawn extra particles on navigation
-                    const rect = item.getBoundingClientRect();
-                    for (let i = 0; i < 8; i++) {
-                        setTimeout(() => {
-                            const x = rect.left + Math.random() * rect.width;
-                            const y = rect.top + Math.random() * rect.height;
-                            spawnParticle(x, y);
-                        }, i * 50);
-                    }
-                    
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 400);
-                }
-            });
-        });
 
         // Background glyph spawning
         setInterval(() => {
