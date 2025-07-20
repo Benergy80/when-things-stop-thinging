@@ -31,31 +31,6 @@
             color: var(--fade0);
             line-height: 1.6;
             overflow-x: hidden;
-            cursor: none;
-        }
-
-        .cursor {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: var(--fade0);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000;
-            transition: transform 0.1s ease;
-            opacity: 0.7;
-        }
-
-        .cursor-follower {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
-            transition: transform 0.3s ease;
-            opacity: 0.5;
         }
 
         .loading {
@@ -68,7 +43,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 10002;
             transition: opacity 0.5s ease;
         }
 
@@ -207,23 +182,6 @@
             transition: all 0.3s ease;
         }
 
-        .work-title::after {
-            content: '→';
-            position: absolute;
-            right: -25px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0;
-            transition: all 0.3s ease;
-            color: var(--fade0);
-            font-size: 1.2rem;
-        }
-
-        .work-item:hover .work-title::after {
-            opacity: 1;
-            right: -35px;
-        }
-
         .work-item:hover .work-title {
             color: var(--fade0);
         }
@@ -239,6 +197,7 @@
             border-radius: 4px;
             transition: all 0.3s ease;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .link::before {
@@ -284,6 +243,7 @@
             text-decoration: none;
             transition: all 0.3s ease;
             font-size: 0.8rem;
+            cursor: pointer;
         }
 
         .footer-link:hover {
@@ -365,14 +325,6 @@
             .work-item {
                 padding: 2rem;
             }
-            
-            .cursor, .cursor-follower {
-                display: none;
-            }
-
-            body {
-                cursor: default;
-            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -390,9 +342,6 @@
     <div class="loading">
         <div class="loading-text">initializing...</div>
     </div>
-    
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
 
     <div class="container">
         <header>
@@ -430,8 +379,6 @@
         const glyphs = '●◉○◌◦∙⋅⬡⬢⟐⟓◈◇◆⬟'.split('');
         const textGlyphs = '.,;:!"\'?-_~'.split('');
         
-        const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
         let particleCount = 0;
         const maxParticles = 30;
 
@@ -469,17 +416,6 @@
                 spawnParticle(x, y);
             }, 400 + Math.random() * 300);
         }
-
-        // Custom cursor
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX - 4 + 'px';
-            cursor.style.top = e.clientY - 4 + 'px';
-            
-            setTimeout(() => {
-                cursorFollower.style.left = e.clientX - 10 + 'px';
-                cursorFollower.style.top = e.clientY - 10 + 'px';
-            }, 100);
-        });
 
         // Spawn particle function
         function spawnParticle(x, y) {
@@ -530,17 +466,7 @@
         // Work item interactions
         const workItems = document.querySelectorAll('.work-item');
         
-        workItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                cursorFollower.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-            
+        workItems.forEach(item => {            
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const href = item.getAttribute('data-href');
@@ -577,17 +503,6 @@
                 const y = window.innerHeight / 2;
                 spawnParticle(x, y);
             }
-        });
-
-        // Link hover effects
-        document.querySelectorAll('.link').forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(2)';
-            });
-            
-            link.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
         });
     </script>
 </body>
